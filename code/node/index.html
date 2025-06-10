@@ -1,0 +1,97 @@
+
+<!--
+Authors: Cristian Palencia, Yohan Kim, Zhilang Gui, Tanveer Dhilon
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Tracker Data</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cat Tracker Data</h1>
+    <div id="chartContainer" style="height: 400px; width: 100%;"></div>
+    <script>
+        // Initialize the CanvasJS chart for real-time data
+        const chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title: { text: "Cat Temperature and Activity Data" },
+            axisX: {
+                title: "Time (HH:MM:SS)",
+                labelAngle: -45,
+                valueFormatString: "HH:mm:ss" // Added to format time labels in 24-hour format
+            },
+            axisY: { title: "Temperature (°C)" },
+            data: [
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Temperature",
+                    markerType: "circle", // Default marker for the temperature points
+                    dataPoints: []
+                }
+            ]
+        });
+
+        // Render the chart initially
+        chart.render();
+
+        // Connect to the server using Socket.io
+        const socket = io();
+
+        // Mapping activity types to colors for differentiation
+        const activityColors = {
+            "Highly Active": "green",
+            "Active": "orange",
+            "Not Active": "red"
+        };
+
+        function parseTimeString(timeString) {
+            const [hours, minutes, seconds] = timeString.split(':');
+            const now = new Date();
+            now.setHours(parseInt(hours, 10));
+            now.setMinutes(parseInt(minutes, 10));
+            now.setSeconds(parseInt(seconds, 10));
+            now.setMilliseconds(0);
+            return now;
+        }
+
+        // Listen for 'sensorUpdate' messages from the server
+        socket.on('sensorUpdate', function (data) {
+            // Example of the incoming data format: { time: "14:35:23", value: 22.5, activity: "walking" }
+
+            // Parse the time correctly and ensure no AM/PM is shown
+            const parsedTime = parseTimeString(data.time);
+
+            // Add new data point with a specific color and marker based on the activity type
+            chart.options.data[0].dataPoints.push({
+                x: parsedTime,  // Use the correctly parsed local time
+                y: data.value,  // Temperature value
+                markerType: "circle",
+                markerColor: activityColors[data.activity] || "black", // Set color based on activity type
+                indexLabel: data.activity,               // Show activity type next to the point
+                indexLabelFontColor: activityColors[data.activity] || "black"
+            });
+
+            // Remove older data points to keep only the last 20 visible
+            if (chart.options.data[0].dataPoints.length > 20) {
+                chart.options.data[0].dataPoints.shift();
+            }
+
+            // Re-render the chart with new data
+            chart.render();
+        });
+    </script>
+</body>
+</html>
