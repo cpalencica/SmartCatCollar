@@ -125,19 +125,6 @@ In this quest, we were successfully able to create a smart cat collar that recor
 - [Link to video technical presentation](https://drive.google.com/file/d/1aFpp11RI6BVutXHhoSuAp_-T2tGB8Q2R/view?usp=drive_link). Not to exceed 120s
 - [Link to video demo](https://drive.google.com/file/d/1fDqN_OaTaeUsbGNRtM6CE7A8nKshv5VA/view?usp=sharing). Not to exceed 120s
 
-### Self-Assessment 
-
-| Objective Criterion | Rating | Max Value  | 
-|---------------------------------------------|:-----------:|:---------:|
-| Objective One | 1 |  1     | 
-| Objective Two | 1 |  1     | 
-| Objective Three | 1 |  1     | 
-| Objective Four | 1 |  1     | 
-| Objective Five | 1 |  1     | 
-| Objective Six | 1 |  1     | 
-| Objective Seven | 1 |  1     | 
-
-
 
 ### AI and Open Source Code Assertions
 
